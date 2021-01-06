@@ -4,7 +4,7 @@ from .data_manager import *
 db_check()
 
 
-@click.group(invoke_without_command=True)
+@click.group()
 def cli() -> None:
     """Welcome to Task managment cli command"""
 
