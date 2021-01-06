@@ -77,7 +77,6 @@ def task_update(hash: int, name: str, description: str = "", deadline: int = "")
         hash=?
     """
     try:
-        print(hash)
         cur.execute(update_task_sql, (name, description, deadline, hash))
         con.commit()
         con.close()

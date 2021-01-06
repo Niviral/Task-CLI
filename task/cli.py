@@ -1,16 +1,16 @@
 import click
-from data_manager import *
+from .data_manager import *
 
 db_check()
 
 
 @click.group(invoke_without_command=True)
-def task():
+def cli():
     """Welcome to Task managment cli command"""
-    pass
+    
 
 
-@task.command(context_settings={"ignore_unknown_options": True})
+@cli.command(context_settings={"ignore_unknown_options": True})
 @click.option(
     "--deadline",
     help="task deadline",
@@ -28,7 +28,7 @@ def add(name: str, deadline: str = "", description: str = "") -> None:
     task_insert(name, description, deadline)
 
 
-@task.command()
+@cli.command()
 @click.option("--name", help="task name")
 @click.option(
     "--deadline",
@@ -38,11 +38,10 @@ def add(name: str, deadline: str = "", description: str = "") -> None:
 @click.argument("task_hash", type=str)
 def update(task_hash, name: str, deadline: str = "", description: str = "") -> None:
     """Update a task"""
-    click.echo(f"{task_hash}, {name}, {deadline}  {description}")
     task_update(task_hash, name, description, deadline)
 
 
-@task.command()
+@cli.command()
 @click.argument("task_hash", type=str)
 def remove(task_hash: str) -> None:
     """Remove a task"""
@@ -50,7 +49,7 @@ def remove(task_hash: str) -> None:
     click.echo("Task removed")
 
 
-@task.command()
+@cli.command()
 @click.option("--all", "list_option", flag_value="ALL", help="List of all saved tasks.")
 @click.option(
     "--today",
@@ -91,4 +90,4 @@ def list(list_option: str) -> str:
 
 
 if __name__ == "__main__":
-    task()
+    cli()
