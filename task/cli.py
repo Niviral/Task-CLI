@@ -5,23 +5,22 @@ db_check()
 
 
 @click.group(invoke_without_command=True)
-def cli():
+def cli() -> None:
     """Welcome to Task managment cli command"""
-    
 
 
 @cli.command(context_settings={"ignore_unknown_options": True})
+@click.option(
+    "--name",
+    help="name of task",
+    required=True,
+)
+@click.option("--description", help="description of task", required=False)
 @click.option(
     "--deadline",
     help="task deadline",
     required=False,
     type=click.DateTime(["%d-%m-%Y", "%d-%m-%Y %H:%M"]),
-)
-@click.option("--description", help="description of added task", required=False)
-@click.option(
-    "--name",
-    help="name of task",
-    required=True,
 )
 def add(name: str, deadline: str = "", description: str = "") -> None:
     """Add new task."""
@@ -29,12 +28,14 @@ def add(name: str, deadline: str = "", description: str = "") -> None:
 
 
 @cli.command()
-@click.option("--name", help="task name")
+@click.option("--name", help="task name", required=False)
+@click.option("--description", help="description of task", required=False)
 @click.option(
     "--deadline",
-    help="task deadline in format",
+    help="task deadline",
+    required=False,
+    type=click.DateTime(["%d-%m-%Y", "%d-%m-%Y %H:%M"]),
 )
-@click.option("--description", help="description of added task")
 @click.argument("task_hash", type=str)
 def update(task_hash, name: str, deadline: str = "", description: str = "") -> None:
     """Update a task"""

@@ -34,10 +34,9 @@ def dbinit():
 # Check if table exist
 def db_check():
     if os.path.exists(os.getenv("ENV_DB_LOC", DB_LOCATION)) == True:
-        print("DB existing, skipping creation")
+        pass
     else:
         dbinit()
-        print("table created")
 
 
 def task_insert(name: str, description: str = "", deadline: int = ""):
@@ -99,7 +98,7 @@ def task_remove(hash: int) -> None:
     con.close()
 
 
-def task_list_all():
+def task_list_all() -> list:
     con = db_connect()
     cur = con.cursor()
     list_task_sql = """
@@ -113,10 +112,11 @@ def task_list_all():
     """
     cur.execute(list_task_sql)
     result = cur.fetchall()
+    con.close()
     return result
 
 
-def task_list_today():
+def task_list_today() -> list:
     con = db_connect()
     cur = con.cursor()
     list_task_sql = """
@@ -132,4 +132,5 @@ def task_list_today():
     """
     cur.execute(list_task_sql)
     result = cur.fetchall()
+    con.close()
     return result
