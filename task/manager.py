@@ -91,6 +91,9 @@ class SqliteDatabase(object):
     def md(self, value: str) -> int:
         return abs(hash(value))
 
+    def nonestr(self, value):
+        return "" if value is None else str(value)
+
     def task_table_check(self) -> None:
         with self.connection as con:
             result = con.execute(check_table_sql)
@@ -113,7 +116,7 @@ class SqliteDatabase(object):
                         name,
                         self.md(name + str(random.randrange(0, 9999))),
                         description,
-                        str(deadline),
+                        self.nonestr(deadline),
                     ),
                 )
         except sqlite3.Error as err:
@@ -124,7 +127,9 @@ class SqliteDatabase(object):
     ):
         try:
             with self.connection as con:
-                con.execute(update_task_sql, (name, description, str(deadline), hash))
+                con.execute(
+                    update_task_sql, (name, description, self.nonestr(deadline), hash)
+                )
         except sqlite3.Error as err:
             print(f"Update failed, error: {err} ")
 
@@ -142,7 +147,7 @@ class SqliteDatabase(object):
         except sqlite3.Error as err:
             print(f"List all failed, error: {err} ")
         else:
-            return tuple(row for row in result)
+            return list(row for row in result)
 
     def task_list_today(self):
         try:
@@ -151,4 +156,4 @@ class SqliteDatabase(object):
         except sqlite3.Error as err:
             print(f"List today failed, error: {err} ")
         else:
-            return tuple(row for row in result)
+            return list(row for row in result)
