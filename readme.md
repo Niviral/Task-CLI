@@ -19,17 +19,6 @@ cd <path>
 python3 -m pip install .
 ```
 
-Storage
----
-
-Task application as every CRUD application has been created with persistent storage under the hood in this case SQLite.<br/>
-You can specify location of your SQLite file using enviroment variable `ENV_DB_LOC` containg path and filename<br/>
-```
-export ENV_DB_LOC='/home/DB.sqlite3'
-```
-If not defautl DB will be creted inside application `/task` folder.
-
-
 Usage
 ---
 ```
