@@ -1,7 +1,7 @@
 import click
-from .data_manager import *
+import manager
 
-db_check()
+task_db = manager.SqliteDatabase(path="task.db")
 
 
 @click.group()
@@ -22,9 +22,14 @@ def cli() -> None:
     required=False,
     type=click.DateTime(["%d-%m-%Y", "%d-%m-%Y %H:%M"]),
 )
-def add(name: str, deadline: str = "", description: str = "") -> None:
-    """Add new task."""
-    task_insert(name, description, deadline)
+def add(
+    name: str,
+    description: str = "",
+    deadline: str = "",
+) -> None:
+    with task_db as db:
+        db.task_insert_new(name, description, deadline)
+    click.echo("Task successfully added")
 
 
 @cli.command()
@@ -37,57 +42,63 @@ def add(name: str, deadline: str = "", description: str = "") -> None:
     type=click.DateTime(["%d-%m-%Y", "%d-%m-%Y %H:%M"]),
 )
 @click.argument("task_hash", type=str)
-def update(task_hash, name: str, deadline: str = "", description: str = "") -> None:
-    """Update a task"""
-    task_update(task_hash, name, description, deadline)
+def update(task_hash, name: str, description: str = "", deadline: str = "") -> None:
+    with task_db as db:
+        db.task_update_existing(task_hash, name, description, deadline)
+    click.echo("Task successfully updated")
 
 
 @cli.command()
 @click.argument("task_hash", type=str)
 def remove(task_hash: str) -> None:
-    """Remove a task"""
-    task_remove(task_hash)
+    with task_db as db:
+        db.task_remove_existing(task_hash)
     click.echo("Task removed")
 
 
 @cli.command()
-@click.option("--all", "list_option", flag_value="ALL", help="List of all saved tasks.")
+@click.option(
+    "--all",
+    "list_option",
+    flag_value="ALL",
+    default=True,
+    help="List of all saved tasks.",
+)
 @click.option(
     "--today",
     "list_option",
     flag_value="TODAY",
-    help="List of all task set with deadline for today.",
+    help="List of tasks with deadline for today.",
 )
 def list(list_option: str) -> str:
-    """List of tasks"""
-
-    def xstr(s):
-        return "" if s is None else str(s)
-
     if list_option == "ALL":
-        result = task_list_all()
-        click.echo(
-            "{:20s} {:20s} {:40s} {:20s}".format(
-                "hash", "name", "description", "deadline"
-            )
-        )
-        for row in result:
-            hash, name, description, deadline = row[0], row[1], row[2], row[3]
+        with task_db as db:
+            result = db.task_list_all()
+        if not result:
             click.echo(
-                f"{hash:20} {name:20s} {xstr(description):40s} {xstr(deadline):20s}"
+                "Your list is empty! Great Job! Remember that you can always add new tasks."
             )
+        else:
+            click.echo(f"{'Hash':20} {'Name':20s} {'Description':40s} {'Deadline':20s}")
+            for row in result:
+                hash, name, description, deadline = row[0], row[1], row[2], row[3]
+                click.echo(
+                    f"{hash:20} {name:20s} {task_db.nonestr(description):40s} {task_db.nonestr(deadline):20s}"
+                )
     else:
-        result = task_list_today()
-        click.echo(
-            "{:20s} {:20s} {:40s} {:20s}".format(
-                "hash", "name", "description", "deadline"
-            )
-        )
-        for row in result:
-            hash, name, description, deadline = row[0], row[1], row[2], row[3]
+        with task_db as db:
+            result = db.task_list_today()
+        if not result:
             click.echo(
-                f"{hash:20} {name:20s} {xstr(description):40s} {xstr(deadline):20s}"
+                "Your list is empty! Great Job! Remember that you can always add new tasks."
             )
+        else:
+            click.echo(f"{'Hash':20} {'Name':20s} {'Description':40s} {'Deadline':20s}")
+            for row in result:
+                hash, name, description, deadline = row[0], row[1], row[2], row[3]
+                click.echo(
+                    f"{hash:20} {name:20s} {task_db.nonestr(description):40s} {task_db.nonestr(deadline):20s}"
+                )
 
 
 if __name__ == "__main__":
