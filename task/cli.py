@@ -1,5 +1,5 @@
 import click
-import manager
+from task import manager
 
 task_db = manager.SqliteDatabase(path="task.db")
 
