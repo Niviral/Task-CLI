@@ -96,27 +96,29 @@ Options:
 ---  
 ### Feedback
 
-```
-+ Error messages
-+ typing
-+ App works
-+ It's installable
-+ Using black
-+ Descriptive README
-- Using click
-- Lack of success message when adding task
-- Command "task list" returns empty table without any info, it's quite confusing that it's returning 
+
++ \+ Error messages
++ \+ typing
++ \+ App works
++ \+ It's installable
++ \+ Using black
++ \+ Descriptive README
+- \- Using click (I don't see this as negative hence Click was left as CLI framework)
+- \- ~~Lack of success message when adding task~~ (Added in : #74bc90e)
+- \- ~~Command "task list" returns empty table without any info, it's quite
+    confusing that it's returning 
     something(empty table), not an error, but no tasks even after user added some.
-    I think that some flag should be default when no params to command are given.
-- Some of the names are considered reserved, list is builtin function so don't overwrite it
-- Importing using * is considered bad practice
-- Use only absolute imports
-- Avoid using one letter variable names
-- It would be more elegant to not mix string formatting methods, I would suggest to use only f strings
-- It's better to use docstrings than comments above function and remember that comment need to contain 
-    some additional information, don't add comments that are obvious therefore redundant
-- You could reverse logic in db_check function so else won't be necessary
-- Lack of .gitignore file
-- Commits should have descriptive message which is not repeated
-- Lack of tests
-```
+    I think that some flag should be default when no params to command are given.~~ (Option `--all` set as default when no option specifed #74bc90e)
+- \- ~~Some of the names are considered reserved, list is builtin function so 
+  don't overwrite it~~ (No reserved names overwiten)
+- \- ~~Importing using * is considered bad practice~~ (All imports changed to absolute #74bc90e)
+- \- ~~Use only absolute imports~~ (All imports changed to absolute #74bc90e)
+- \- ~~Avoid using one letter variable names~~ (No single letter variables #74bc90e)
+- \- ~~It would be more elegant to not mix string formatting methods, I would suggest to use only f strings~~ (All formating performed with fstring #74bc90e)
+- \- ~~It's better to use docstrings than comments above function and remember that comment need to contain 
+    some additional information, don't add comments that are obvious therefore redundant~~ (Removed all redundant docstrings and comments #74bc90e)
+- \- ~~You could reverse logic in db_check function so else won't be necessary~~ (db_check logic resolved on context manager level since #f7c7fb5)
+- \- ~~Lack of .gitignore file~~ (.gitignore added #26b7b93)
+- \- ~~Commits should have descriptive message which is not repeated~~ (descriptive commit message from #26b7b93 forward)
+- \- ~~Lack of tests~~ (test for manager added #c68c825)
+
